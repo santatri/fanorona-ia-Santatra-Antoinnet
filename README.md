@@ -264,12 +264,5 @@ Mesuré avec `time.perf_counter()` (précision sous-milliseconde) :
 
 Gain estimé : **~60 % du temps de développement**.
 
----
-
-## 📄 Licence
-
-MIT
-
----
 
 *ISPM Madagascar · Algorithmique Avancée · Hackathon 2026*
