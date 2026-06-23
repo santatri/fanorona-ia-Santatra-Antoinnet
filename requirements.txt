@@ -1,4 +1,1 @@
-streamlit>=1.10
-numpy
-protobuf
 streamlit>=1.32.0

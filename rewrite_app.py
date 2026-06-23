@@ -1,4 +1,6 @@
-from __future__ import annotations
+from pathlib import Path
+
+content = '''from __future__ import annotations
 import streamlit as st
 import time
 from typing import Optional
@@ -122,20 +124,20 @@ def render_board() -> None:
         cols = st.columns(3)
         for col in range(3):
             idx = row * 3 + col
-            token = ' '
+            token = '·'
             if game.board[idx] == P1:
-                token = '✖'
+                token = 'X'
             elif game.board[idx] == P2:
-                token = '〇'
-            
+                token = 'O'
             if st.session_state.selected == idx:
-                token = '🎯' # Selection target
+                token = '⭕'
             elif game.phase == 2 and st.session_state.selected >= 0:
                 legal_targets = [move[2] for move in game.legal_moves() if move[0] == 'move' and move[1] == st.session_state.selected]
                 if idx in legal_targets:
-                    token = '◌' # Possible target square
+                    token = '🟢'
             with cols[col]:
-                st.button(token, key=f'cell-{idx}', disabled=(game.winner != EMPTY), on_click=handle_click, args=(idx,))
+                if st.button(token, key=f'cell-{idx}', disabled=(game.winner != EMPTY)):
+                    handle_click(idx)
 
 
 def main() -> None:
@@ -143,67 +145,13 @@ def main() -> None:
     init_state()
 
     st.markdown(
-        """<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
-<style>
-:root {
-    --bg-dark: #0d1117;
-    --glass-bg: rgba(22, 32, 42, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --p1-color: #00f2ff;
-    --p2-color: #bd00ff;
-    --text-main: #e8e8f0;
-    --text-dim: #9fb6d6;
-    --accent: #2c4f73;
-}
-body, .stApp { 
-    background-color: var(--bg-dark); 
-    color: var(--text-main); 
-    font-family: 'Inter', sans-serif;
-}
-h1, h2, h3 { font-family: 'Outfit', sans-serif; font-weight: 700; color: #fff; }
-.stButton > button { 
-    background: var(--glass-bg); 
-    color: var(--text-main); 
-    border: 1px solid var(--glass-border); 
-    border-radius: 16px; 
-    padding: 0.75rem; 
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(8px);
-    font-size: 1.1rem;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.stButton > button:hover { 
-    border-color: var(--p1-color); 
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 242, 255, 0.2);
-    background: rgba(31, 58, 87, 0.8);
-}
-.stButton > button:active { transform: scale(0.95); }
-.score-panel, .history-panel, .legal-panel { 
-    background: var(--glass-bg); 
-    border: 1px solid var(--glass-border); 
-    border-radius: 20px; 
-    padding: 20px; 
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-}
-.small-text { color: var(--text-dim); font-size: 0.85rem; }
-@media (max-width: 768px) {
-    .stButton > button { padding: 0.5rem; font-size: 1rem; }
-    .score-panel { padding: 12px; margin-bottom: 10px; }
-    h1 { font-size: 1.8rem !important; }
-}
-[data-testid="stHorizontalBlock"] > div {
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-}
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
-</style>""",
+        '<style>'
+        'body, .stApp { background: #0d1117; color: #e8e8f0; }'
+        '.stButton > button { background: #16202a; color: #f1f5f9; border: 1px solid #2c4f73; border-radius: 12px; padding: 0.65rem 0.9rem; }'
+        '.stButton > button:hover { background: #1f3a57; }'
+        '.status-panel, .score-panel, .history-panel, .legal-panel { background: #111827; border: 1px solid #24344e; border-radius: 16px; padding: 18px; }'
+        '.small-text { color: #9fb6d6; font-size: 0.92rem; }'
+        '</style>',
         unsafe_allow_html=True,
     )
 
@@ -236,11 +184,11 @@ h1, h2, h3 { font-family: 'Outfit', sans-serif; font-weight: 700; color: #fff; }
     current = st.session_state.game.current_player
     col1, col2, col3 = st.columns([2, 1, 2])
     with col1:
-        st.markdown(f'<div class="score-panel"><span class="small-text">Joueur 1</span><br><strong style="color:var(--p1-color);font-size:1.4rem;">{player_name(P1)}</strong><br>Score : <b>{st.session_state.scores[0]}</b></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="score-panel"><strong>{player_name(P1)}</strong><br>Score : {st.session_state.scores[0]}</div>', unsafe_allow_html=True)
     with col2:
-        st.markdown(f'<div class="score-panel" style="text-align:center;"><span class="small-text">{status_text()}</span><br><strong style="font-size:1.2rem;">Phase {st.session_state.game.phase}</strong></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="score-panel"><strong>{status_text()}</strong><br><span class="small-text">Phase {st.session_state.game.phase}</span></div>', unsafe_allow_html=True)
     with col3:
-        st.markdown(f'<div class="score-panel" style="text-align:right;"><span class="small-text">Joueur 2</span><br><strong style="color:var(--p2-color);font-size:1.4rem;">{player_name(P2)}</strong><br>Score : <b>{st.session_state.scores[1]}</b></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="score-panel"><strong>{player_name(P2)}</strong><br>Score : {st.session_state.scores[1]}</div>', unsafe_allow_html=True)
 
     board_col, panel_col = st.columns([2, 1])
     with board_col:
@@ -254,7 +202,6 @@ h1, h2, h3 { font-family: 'Outfit', sans-serif; font-weight: 700; color: #fff; }
                     if st.session_state.game.winner != EMPTY or st.session_state.game.is_terminal():
                         break
                     ai_turn()
-                st.rerun()
 
     with panel_col:
         st.subheader('Historique')
@@ -280,8 +227,10 @@ h1, h2, h3 { font-family: 'Outfit', sans-serif; font-weight: 700; color: #fff; }
         st.write(f'Joueur actif : {player_name(current)}')
         st.write(f'Pions placés : X={st.session_state.game.placed[0]} / O={st.session_state.game.placed[1]}')
 
-    st.markdown('<div class="score-panel" style="margin-top:2rem;text-align:center;padding:15px;opacity:0.8;font-size:0.85rem;color:var(--text-dim);">♟ Développé pour un Hackathon Universitaire d\'Algorithmique Avancée • 2026</div>', unsafe_allow_html=True)
+    st.markdown('''<div style="color:#9fb6d6;font-size:0.85rem;text-align:center;">Développé pour un hackathon universitaire d'Algorithmique Avancée.</div>''', unsafe_allow_html=True)
 
 
 if __name__ == '__main__':
     main()
+'@
+[System.IO.File]::WriteAllText('D:\fanoron-streamlit\app.py',$code,[System.Text.Encoding]::UTF8)

@@ -3,8 +3,8 @@
 Projet réalisé pour un hackathon d'Algorithmique Avancée — jeu Fanoron-telo (plateau 3x3) avec IA.
 
 ## Membres
-- Nom 1 — Développeur principal
-- Nom 2 — IA & Algorithmes
+- Nom 1 — SANTATRINIAINA Feno Nasandratra IGGIA4 Numero : 57
+- Nom 2 — RATSARAFARA Jean Antoinnet      IGGIA4 Numero : 53
 
 ## Description
 Jeu Fanoron-telo (3x3), deux phases: placement puis déplacement. Trois pions par joueur.
@@ -59,9 +59,11 @@ MIT
 
 | Nom Complet | Numéro d'étudiant | Classe | Rôle précis |
 |-------------|-------------------|--------|-------------|
-| _(à remplir)_ | _(à remplir)_ | _(à remplir)_ | Lead AI / Minimax |
-| _(à remplir)_ | _(à remplir)_ | _(à remplir)_ | UI Streamlit / Frontend |
-| _(à remplir)_ | _(à remplir)_ | _(à remplir)_ | Backend Logique / DevOps |
+| SANTATRINIAINA Feno Nasandratra | 57 | IGGIA4 | Développement de l'interface Streamlit, gestion de l'état du jeu (session_state), fonctionnalités Undo/Redo, documentation, Git/GitHub et déploiement de l'application |
+
+
+
+| RATSARAFARA Jean Antoinnet | 53 | IGGIA4 | Développement de l'IA (Minimax, Alpha-Bêta, heuristique), implémentation des règles du jeu, tests et optimisation des performances. |
 
 ---
 
@@ -91,13 +93,15 @@ Application web du jeu **Fanoron-telo** avec IA, en **Python pur + Streamlit**.
 ## Section 3 : Guide d'Installation Rapide
 
 ```bash
-git clone <url_du_depot>
+git clone < https://github.com/santatri/fanorona-ia-Santatra-Antoinnet.git >
 cd fanoron-streamlit
 pip install -r requirements.txt
-streamlit run app.py
+py -m streamlit run app.py
 ```
 
 Ouvre automatiquement `http://localhost:8501` dans le navigateur.
+
+ou le version en ligne : `https://fanoron-ai.streamlit.app/`
 
 ---
 
@@ -170,7 +174,7 @@ trans_table[key] = best_val   # dict Python natif
 | Alpha-Bêta pruning | ✅ |
 | Table de transposition | ✅ |
 | Randomisation (Facile) | ✅ |
-| Iterative deepening | — |
+| Iterative deepening | ✅ |
 
 ---
 
@@ -181,8 +185,8 @@ Mesuré avec `time.perf_counter()` (précision sous-milliseconde) :
 | Niveau | Profondeur | Temps moyen/coup |
 |---|---|---|
 | Facile | 1 | < 1 ms |
-| Moyen | 3 | 1–5 ms |
-| Difficile | 7 | 5–50 ms |
+| Moyen | 4+ (ID) | 50–200 ms |
+| Difficile | 15+ (ID) | 200–800 ms |
 
 **IA Difficile vs IA Difficile :** 100% de nuls (jeu parfait sur 3×3 avec Alpha-Bêta complet).  
 **IA Difficile vs IA Facile :** victoire IA Difficile dans ~95% des cas.
